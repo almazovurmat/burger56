@@ -1,5 +1,7 @@
-export type Ingredient = {
+export type IngredientType = {
     name: string,
     price: number,
-    image: string
+    image: string,
+    count: number,
+    isDelete?: boolean
 };

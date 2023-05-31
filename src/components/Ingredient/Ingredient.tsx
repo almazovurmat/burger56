@@ -1,12 +1,13 @@
 import React from 'react';
+import {IngredientType} from "../../type";
 
 interface IProps {
-    name: string
+    ingredient: IngredientType;
 }
-const Ingredient: React.FC<IProps> = ({name}) => {
+const Ingredient: React.FC<IProps> = ({ingredient}) => {
 
     return (
-        <div className={name}></div>
+        <div className={ingredient.name}>{ingredient.count}</div>
     );
 };
 

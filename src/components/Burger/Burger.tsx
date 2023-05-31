@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import Ingredient from "../Ingredient/Ingredient";
+import { IngredientType } from "../../type";
 
-interface IProps {
-    ingredientName: string;
+interface BurgerProps {
+    selectedIngredient: IngredientType | null;
 }
 
-const Burger: React.FC<IProps> = ({ ingredientName }) => {
-    const [burgerIngredients, setBurgerIngredients] = useState<string[]>([]);
+const Burger: React.FC<BurgerProps> = ({ selectedIngredient }) => {
+    const [burgerIngredients, setBurgerIngredients] = useState<IngredientType[]>([]);
 
-    const setIngredientName = (name: string) => {
-        setBurgerIngredients(prevIngredients => [...prevIngredients, name]);
-    };
-
+    console.log(burgerIngredients);
     useEffect(() => {
-        setIngredientName(ingredientName);
-    }, [ingredientName]);
+        if (selectedIngredient) {
+            setBurgerIngredients(prevIngredients => [...prevIngredients, selectedIngredient]);
+        }
+    }, [selectedIngredient]);
 
     return (
         <div className="Burger">
@@ -22,9 +22,9 @@ const Burger: React.FC<IProps> = ({ ingredientName }) => {
                 <div className="Seeds1"></div>
                 <div className="Seeds2"></div>
             </div>
-            {burgerIngredients.map((ingredient: string, index: number) => {
-                return <Ingredient key={index} name={ingredient} />
-            })}
+            {burgerIngredients.map((ingredient, index) => (
+                <Ingredient key={index} ingredient={ingredient} />
+            ))}
             <div className="BreadBottom"></div>
         </div>
     );
