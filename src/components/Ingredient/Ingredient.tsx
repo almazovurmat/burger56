@@ -1,10 +1,12 @@
 import React from 'react';
 
-const Ingredient = () => {
+interface IProps {
+    name: string
+}
+const Ingredient: React.FC<IProps> = ({name}) => {
+
     return (
-        <div>
-            
-        </div>
+        <div className={name}></div>
     );
 };
 
