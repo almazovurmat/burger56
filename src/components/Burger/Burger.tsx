@@ -3,16 +3,15 @@ import Ingredient from "../Ingredient/Ingredient";
 import { IngredientType } from "../../type";
 
 interface BurgerProps {
-    selectedIngredient: IngredientType | null;
+    selectedIngredient: IngredientType[] | null;
 }
 
 const Burger: React.FC<BurgerProps> = ({ selectedIngredient }) => {
     const [burgerIngredients, setBurgerIngredients] = useState<IngredientType[]>([]);
 
-    console.log(burgerIngredients);
     useEffect(() => {
         if (selectedIngredient) {
-            setBurgerIngredients(prevIngredients => [...prevIngredients, selectedIngredient]);
+            setBurgerIngredients([...selectedIngredient]);
         }
     }, [selectedIngredient]);
 

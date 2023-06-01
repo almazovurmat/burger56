@@ -1,5 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import Burger from "./components/Burger/Burger";
+import TotalPrice from "./components/TotalPrice/TotalPrice";
 import {IngredientType} from "./type";
 import './App.css';
 import './assets/css/burger.css';
@@ -11,11 +12,11 @@ import baconImage from './assets/images/bacon.png';
 
 
 const App = () => {
-    const [INGREDIENTS, setINGREDIENTS] = useState<IngredientType[]>([
+     const [INGREDIENTS, setINGREDIENTS] = useState<IngredientType[]>([
         {name: 'Meat', price: 80, image: meatImage, count: 0},
         {name: 'Cheese', price: 50, image: cheeseImage, count: 0},
-        {name: 'Salad', price: 50, image: saladImage, count: 0},
-        {name: 'Bacon', price: 50, image: baconImage, count: 0},
+        {name: 'Salad', price: 10, image: saladImage, count: 0},
+        {name: 'Bacon', price: 60, image: baconImage, count: 0},
     ]);
 
     const styles: React.CSSProperties = {
@@ -24,15 +25,24 @@ const App = () => {
         justifyContent: "space-between",
     };
 
-    const [chosenIngredient, setChosenIngredient] = useState<IngredientType | null>(null);
+    const [chosenIngredient, setChosenIngredient] = useState<IngredientType[] | null>(null);
     const [chosenIngredientForDelete, setChosenIngredientForDelete] = useState<IngredientType | null>(null);
     const [allChosenIngredient, setAllChosenIngredient] = useState<IngredientType[]>([]);
+    const [totalPrice, setTotalPrice] = useState<number>(30);
 
     const updateIngredientCount = (name: string, increment: number, isDelete: boolean = false) => {
         setChosenIngredient(prevIngredient => {
-            if (prevIngredient && prevIngredient.name === name) {
-                const updatedIngredient = {...prevIngredient, count: prevIngredient.count + increment};
-                return updatedIngredient;
+            if (prevIngredient) {
+                const index = prevIngredient.findIndex(item => item.name === name);
+                if (index !== -1) {
+                    const updatedIngredient = {
+                        ...prevIngredient[index],
+                        count: prevIngredient[index].count + increment
+                    };
+                    const updatedIngredients = [...prevIngredient];
+                    updatedIngredients[index] = updatedIngredient;
+                    return updatedIngredients;
+                }
             }
             return prevIngredient;
         });
@@ -40,7 +50,20 @@ const App = () => {
 
     const deleteOneIngredientCount = (chosenIngredient: IngredientType) => {
         setChosenIngredientForDelete(chosenIngredient);
-        setChosenIngredient(null);
+        setChosenIngredient(prevState => {
+            if (prevState) {
+                const ingredientIndex = prevState.findIndex(
+                    ingredient => ingredient.name === chosenIngredient.name
+                );
+                if (ingredientIndex !== -1) {
+                    const updatedIngredients = [...prevState];
+                    updatedIngredients.splice(ingredientIndex, 1);
+                    return updatedIngredients;
+                }
+            }
+            return prevState;
+        });
+
         setAllChosenIngredient(prevState => {
             const ingredientIndex = prevState.findIndex(
                 ingredient => ingredient.name === chosenIngredient.name
@@ -64,7 +87,14 @@ const App = () => {
     };
 
     const itemClick = (chosenIngredient: IngredientType) => {
-        setChosenIngredient(chosenIngredient);
+        setChosenIngredient(prevState => {
+            if (prevState) {
+                const updatedIngredients = [...prevState, chosenIngredient];
+                return updatedIngredients;
+            }
+            return [chosenIngredient];
+        });
+
         setAllChosenIngredient(prevState => {
             const ingredientIndex = prevState.findIndex(
                 ingredient => ingredient.name === chosenIngredient.name
@@ -81,32 +111,31 @@ const App = () => {
         });
     }
 
-    useEffect(() => {
-        const ingredientsCount = allChosenIngredient.reduce((count, ingredient) => {
-            if (ingredient.name === chosenIngredientForDelete?.name && ingredient.isDelete) {
-                return ingredient.count ;
-            } else {
-                if (ingredient.name === chosenIngredient?.name) {
-                    return count + ingredient.count;
-                } else {
-                    return count;
-                }
-            }
-        }, 0);
+    const countPrice = useCallback((): number => {
+        if (chosenIngredient) {
+            return chosenIngredient.reduce((acc, ingredient) => {
+                return acc + ingredient.price;
+            }, 30)
+        }
+        return 30;
+    }, [chosenIngredient]);
 
-        const updatedIngredients = INGREDIENTS.map(ingredient => {
-            if (ingredient.name === chosenIngredientForDelete?.name && ingredient.isDelete) {
-                return {...ingredient, count: ingredientsCount};
+    useEffect(() => {
+        setTotalPrice(countPrice());
+    }, [chosenIngredient, countPrice]);
+
+    useEffect(() => {
+        const updatedIngredients = INGREDIENTS.map((ingredient) => {
+            const matchingChosenIngredient = allChosenIngredient.find((chosenIngredient) => chosenIngredient.name === ingredient.name);
+            if (matchingChosenIngredient) {
+                return { ...ingredient, count: matchingChosenIngredient.count };
             }
-            if (ingredient.name === chosenIngredient?.name) {
-                return {...ingredient, count: ingredientsCount};
-            } else {
-                return ingredient;
-            }
+            return ingredient;
         });
 
         setINGREDIENTS(updatedIngredients);
-    }, [allChosenIngredient, chosenIngredient]);
+    }, [allChosenIngredient, chosenIngredient, chosenIngredientForDelete]);
+
     return (
         <div style={styles}>
             <div className="side">
@@ -121,6 +150,7 @@ const App = () => {
                                 }}>
                                     <img className="ingredientItem" src={item.image} alt={item.name}/>
                                     <span>{item.name}</span>
+                                    <b>{}</b>
                                 </span>
                                 <span className="counterItem">{item.count > 0 ? item.count : 0}</span>
                                 <button className="deleteItem" onClick={() => {
@@ -135,7 +165,8 @@ const App = () => {
             </div>
             <div className="side">
                 <h3 className="blockTitle">Burger</h3>
-                <Burger selectedIngredient={chosenIngredient} />
+                <Burger selectedIngredient={chosenIngredient}/>
+                <TotalPrice totalPrice={totalPrice}/>
             </div>
         </div>
     );
