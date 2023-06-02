@@ -21,9 +21,36 @@
 
 .ingredientItem {
     width: 75px;
+    margin-right: 20px;
+    position: absolute;
+    left: 0;
+    border-radius: 50%;
 }
 
 .deleteItem {
     padding: 15px 30px;
     margin-left: 30px;
+    background: #dc3545;
+    border: none;
+    border-radius: 20px;
+    color: white;
+}
+
+.ingredients {
+    height: 95px;
+    display: inline-block;
+    position: relative;
+    padding-left: 120px;
+}
+
+.ingredientName {
+    height: 80px;
+    line-height: 80px;
+    display: inline-block;
+    margin-right: 20px;
+    width: 50px;
+}
+
+.totalPrice {
+    margin-top: 30px;
 }

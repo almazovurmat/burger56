@@ -93,14 +93,13 @@ const App = () => {
                     ingredients.map(item => {
                         return (
                             <div key={item.name}>
-                                <span onClick={() => {
+                                <span className="ingredients" onClick={() => {
                                     itemClick(item);
                                     updateIngredientCount(item.name, 1);
                                     refresh(item, 1);
                                 }}>
                                     <img className="ingredientItem" src={item.image} alt={item.name}/>
-                                    <span>{item.name}</span>
-                                    <b>{}</b>
+                                    <span className="ingredientName">{item.name}</span>
                                 </span>
                                 <span className="counterItem">{item.count > 0 ? item.count : 0}</span>
                                 <button className="deleteItem" onClick={() => {

@@ -5,7 +5,7 @@ interface IProps {
 }
 const TotalPrice: React.FC<IProps> = ({totalPrice}) => {
     return (
-        <div>
+        <div className="totalPrice">
             <b>Total Price: </b> {totalPrice}
         </div>
     );
