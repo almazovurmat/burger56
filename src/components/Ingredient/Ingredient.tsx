@@ -7,7 +7,7 @@ interface IProps {
 const Ingredient: React.FC<IProps> = ({ingredient}) => {
 
     return (
-        <div className={ingredient.name}>{ingredient.count}</div>
+        <div className={ingredient.name}></div>
     );
 };
 
