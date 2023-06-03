@@ -1,12 +1,12 @@
 export type IngredientType = {
-    name: string,
-    price: number,
-    image: string,
+    name: string;
+    price: number;
+    image: string;
 };
 
 export type IngredientType2 = {
-    name: string,
-    price: number,
-    image: string,
-    count: number,
+    name: string;
+    price: number;
+    image: string;
+    count: number;
 };

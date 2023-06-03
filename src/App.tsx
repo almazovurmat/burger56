@@ -75,7 +75,7 @@ const App = () => {
         setIngredients(updatedIngredients);
     };
 
-    const itemClick = (chosenIngredient: IngredientType2) => {
+    const addIngredients = (chosenIngredient: IngredientType2) => {
         setChosenIngredient(prevState => {
             if (prevState) {
                 const updatedIngredients = [...prevState, chosenIngredient];
@@ -94,7 +94,7 @@ const App = () => {
                         return (
                             <div key={item.name}>
                                 <span className="ingredients" onClick={() => {
-                                    itemClick(item);
+                                    addIngredients(item);
                                     updateIngredientCount(item.name, 1);
                                     refresh(item, 1);
                                 }}>
